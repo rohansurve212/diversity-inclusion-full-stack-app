@@ -7,7 +7,6 @@ import { toast } from 'react-toastify'
 import { FaSignInAlt } from 'react-icons/fa'
 
 import { login, reset } from '../features/auth/authSlice'
-import Spinner from '../components/Spinner'
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -52,10 +51,6 @@ const Login = () => {
     }
 
     dispatch(login(userData))
-  }
-
-  if (isLoading) {
-    return <Spinner />
   }
 
   return (

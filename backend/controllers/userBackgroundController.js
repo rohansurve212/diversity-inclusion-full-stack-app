@@ -1,5 +1,6 @@
 /** @format */
 import asyncHandler from 'express-async-handler'
+import mongoose from 'mongoose'
 
 import UserBackground from '../models/userBackground.js'
 import UserProfile from '../models/userProfile.js'
@@ -8,7 +9,27 @@ import UserProfile from '../models/userProfile.js'
 // @route   GET /api/userbackground
 // @access  Private
 export const getUserBackground = asyncHandler(async (req, res) => {
-  const userBackground = await UserBackground.find({ user: req.user.id })
+  const userBackground = await UserBackground.findOne({
+    user: req.user._id,
+  })
+
+  if (!userBackground) {
+    res.status(400)
+    throw new Error('User Background not found')
+  }
+
+  //Check for user
+  if (!req.user) {
+    res.status(401)
+    throw new Error('User not found')
+  }
+
+  //Make sure the logged in user matches the userBackground user
+  if (userBackground.user.toString() !== req.user.id) {
+    res.status(401)
+    throw new Error('User not authorized')
+  }
+
   res.status(200).json(userBackground)
 })
 
@@ -18,13 +39,13 @@ export const getUserBackground = asyncHandler(async (req, res) => {
 export const setUserBackground = asyncHandler(async (req, res) => {
   const userBackground = new UserBackground({
     user: req.user._id,
-    namePronunciation: req.body.namePronunciation || null,
-    pronoun: req.body.pronoun || null,
-    favFestival: req.body.favFestival || null,
-    favSport: req.body.favSport || null,
-    favCuisine: req.body.favCuisine || null,
-    favHobby: req.body.favHobby || null,
-    biggestInspiration: req.body.biggestInspiration || null,
+    namePronunciation: req.body.namePronunciation || '',
+    pronoun: req.body.pronoun || '',
+    favFestival: req.body.favFestival || '',
+    favSport: req.body.favSport || '',
+    favCuisine: req.body.favCuisine || '',
+    favHobby: req.body.favHobby || '',
+    biggestInspiration: req.body.biggestInspiration || '',
   })
 
   const createdUserBackground = await userBackground.save()
@@ -54,7 +75,7 @@ export const updateUserBackground = asyncHandler(async (req, res) => {
   }
 
   //Make sure the logged in user matches the userBackground user
-  if (userBackground.user.toString() !== req.user.id) {
+  if (userBackground.user.toString() !== req.user.id.toString()) {
     res.status(401)
     throw new Error('User not authorized')
   }

@@ -6,10 +6,22 @@ import userBackgroundService from './userBackgroundService'
 
 const initialState = {
   userBackground: {},
-  isError: false,
-  isSuccess: false,
-  isLoading: false,
-  message: '',
+  createUserBackgroundIsError: false,
+  createUserBackgroundIsSuccess: false,
+  createUserBackgroundIsLoading: false,
+  createUserBackgroundMessage: '',
+  getUserBackgroundIsError: false,
+  getUserBackgroundIsSuccess: false,
+  getUserBackgroundIsLoading: false,
+  getUserBackgroundMessage: '',
+  updateUserBackgroundIsError: false,
+  updateUserBackgroundIsSuccess: false,
+  updateUserBackgroundIsLoading: false,
+  updateUserBackgroundMessage: '',
+  deleteUserBackgroundIsError: false,
+  deleteUserBackgroundIsSuccess: false,
+  deleteUserBackgroundIsLoading: false,
+  deleteUserBackgroundMessage: '',
 }
 
 //Create new userBackground
@@ -90,56 +102,56 @@ export const userBackgroundSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(createUserBackground.pending, (state) => {
-        state.isLoading = true
+        state.createUserBackgroundIsLoading = true
       })
       .addCase(createUserBackground.fulfilled, (state, action) => {
-        state.isLoading = false
-        state.isSuccess = true
+        state.createUserBackgroundIsLoading = false
+        state.createUserBackgroundIsSuccess = true
         state.userBackground = action.payload
       })
       .addCase(createUserBackground.rejected, (state, action) => {
-        state.isLoading = false
-        state.isError = true
-        state.message = action.payload
+        state.createUserBackgroundIsLoading = false
+        state.createUserBackgroundIsError = true
+        state.createUserBackgroundMessage = action.payload
       })
       .addCase(getUserBackground.pending, (state) => {
-        state.isLoading = true
+        state.getUserBackgroundIsLoading = true
       })
       .addCase(getUserBackground.fulfilled, (state, action) => {
-        state.isLoading = false
-        state.isSuccess = true
+        state.getUserBackgroundIsLoading = false
+        state.getUserBackgroundIsSuccess = true
         state.userBackground = action.payload
       })
       .addCase(getUserBackground.rejected, (state, action) => {
-        state.isLoading = false
-        state.isError = true
-        state.message = action.payload
+        state.getUserBackgroundIsLoading = false
+        state.getUserBackgroundIsError = true
+        state.getUserBackgroundMessage = action.payload
       })
       .addCase(updateUserBackground.pending, (state) => {
-        state.isLoading = true
+        state.updateUserBackgroundIsLoading = true
       })
       .addCase(updateUserBackground.fulfilled, (state, action) => {
-        state.isLoading = false
-        state.isSuccess = true
+        state.updateUserBackgroundIsLoading = false
+        state.updateUserBackgroundIsSuccess = true
         state.userBackground = action.payload
       })
       .addCase(updateUserBackground.rejected, (state, action) => {
-        state.isLoading = false
-        state.isError = true
-        state.message = action.payload
+        state.updateUserBackgroundIsLoading = false
+        state.updateUserBackgroundIsError = true
+        state.updateUserBackgroundMessage = action.payload
       })
       .addCase(deleteUserBackground.pending, (state) => {
-        state.isLoading = true
+        state.deleteUserBackgroundIsLoading = true
       })
       .addCase(deleteUserBackground.fulfilled, (state, action) => {
-        state.isLoading = false
-        state.isSuccess = true
+        state.deleteUserBackgroundIsLoading = false
+        state.deleteUserBackgroundIsSuccess = true
         state.userBackground = {}
       })
       .addCase(deleteUserBackground.rejected, (state, action) => {
-        state.isLoading = false
-        state.isError = true
-        state.message = action.payload
+        state.deleteUserBackgroundIsLoading = false
+        state.deleteUserBackgroundIsError = true
+        state.deleteUserBackgroundMessage = action.payload
       })
   },
 })
