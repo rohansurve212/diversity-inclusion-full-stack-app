@@ -1,8 +1,8 @@
 {
-  "name": "goalsetter-full-stack-app",
+  "name": "diversity-inclusion-full-stack-app",
   "version": "1.0.0",
   "type": "module",
-  "description": "Goalsetter app to accomplish personal goals",
+  "description": "Diversity and Inclusion app to enable diversity and inclusion at workplace",
   "main": "server.js",
   "scripts": {
     "start": "node backend/server.js",
