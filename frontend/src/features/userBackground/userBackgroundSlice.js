@@ -6,7 +6,6 @@ import userBackgroundService from './userBackgroundService'
 
 //Get user from localStorage
 const userBackground = JSON.parse(localStorage.getItem('userBackground'))
-console.log(userBackground)
 
 const initialState = {
   allUserBackgrounds: [],

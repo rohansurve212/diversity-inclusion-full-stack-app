@@ -17,6 +17,8 @@ const BulletinBoard = () => {
   const [triviaCard, setTriviaCard] = useState(false)
   const [checkAnswer, setCheckAnswer] = useState(false)
   const [displayQuestion, setDisplayQuestion] = useState(false)
+  const [triviaQuestion, setTriviaQuestion] = useState('')
+  const [triviaAnswer, setTriviaAnswer] = useState('')
 
   useEffect(() => {
     if (!loggedInUser) {
@@ -30,22 +32,29 @@ const BulletinBoard = () => {
   let question = ''
   let answer = ''
 
-  if (triviaCard) {
+  const pickRandomUser = () => {
     const randomUserBackground =
       allUserBackgrounds[Math.floor(Math.random() * allUserBackgrounds.length)]
 
     questionBank = [
-      `This person loves ${randomUserBackground.favCuisine} cuisine and enjoys the sport of ${randomUserBackground.favSport}. Who are we talking about?`,
-      `This person celebrates the festival of ${randomUserBackground.favFestival} and loves ${randomUserBackground.favHobby} as a favorite hobby. Who are we talking about?`,
-      `This person loves ${randomUserBackground.favCuisine} cuisine and celebrates the festival of ${randomUserBackground.favFestival}. Who are we talking about?`,
-      `This person enjoys the sport of ${randomUserBackground.favSport} and loves ${randomUserBackground.favHobby} as a favorite hobby. Who are we talking about?`,
+      `This person loves ${randomUserBackground?.favCuisine} cuisine and enjoys the sport of ${randomUserBackground?.favSport}. Who are we talking about?`,
+      `This person celebrates the festival of ${randomUserBackground?.favFestival} and loves ${randomUserBackground?.favHobby} as a favorite hobby. Who are we talking about?`,
+      `This person loves ${randomUserBackground?.favCuisine} cuisine and celebrates the festival of ${randomUserBackground?.favFestival}. Who are we talking about?`,
+      `This person enjoys the sport of ${randomUserBackground?.favSport} and loves ${randomUserBackground?.favHobby} as a favorite hobby. Who are we talking about?`,
     ]
 
     question = questionBank[Math.floor(Math.random() * questionBank.length)]
-    answer = randomUserBackground.user.name
+    answer = randomUserBackground?.user.name
+
+    return [question, answer]
   }
 
+  console.log(pickRandomUser())
+
   const createTriviaCard = () => {
+    const user = pickRandomUser()
+    setTriviaQuestion(user[0])
+    setTriviaAnswer(user[1])
     setDisplayQuestion(true)
     setTriviaCard(true)
   }
@@ -69,8 +78,12 @@ const BulletinBoard = () => {
         {triviaCard && displayQuestion && (
           <>
             <Card>
-              <p>{question}</p>
+              <p>{triviaQuestion}</p>
             </Card>
+            <h2> </h2>
+            {/* <Card>
+              <p>{triviaAnswer}</p>
+            </Card> */}
             <h2> </h2>
             <Button variant='secondary' onClick={checkAnswerHandler} size='lg'>
               Check Answer
@@ -78,7 +91,9 @@ const BulletinBoard = () => {
             <h2> </h2>
           </>
         )}
-        {triviaCard && checkAnswer && !displayQuestion && <Card>{answer}</Card>}
+        {triviaCard && checkAnswer && !displayQuestion && (
+          <Card>{triviaAnswer}</Card>
+        )}
       </section>
     </>
   )
