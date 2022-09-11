@@ -29,6 +29,8 @@ const UserBackgroundForm = () => {
     getUserBackgroundMessage,
   } = useSelector((state) => state.userBackground)
 
+  console.log(userBackground)
+
   const FORM_DATA_INITIAL_STATE = {
     namePronunciation: '',
     pronoun: '',
@@ -51,16 +53,28 @@ const UserBackgroundForm = () => {
   } = formData
 
   useEffect(() => {
-    !loggedInUser ? navigate('/login') : dispatch(getUserBackground())
+    if (!loggedInUser) {
+      navigate('/login')
+    } else {
+      if (loggedInUser.userFormCreated) {
+        dispatch(getUserBackground())
+      } else {
+        if (userBackground.user === loggedInUser._id) {
+          dispatch(getUserBackground())
+        } else {
+          navigate('/')
+        }
+      }
+    }
 
     setFormData({
-      namePronunciation: userBackground.namePronunciation,
-      pronoun: userBackground.pronoun,
-      favFestival: userBackground.favFestival,
-      favSport: userBackground.favSport,
-      favCuisine: userBackground.favCuisine,
-      favHobby: userBackground.favHobby,
-      biggestInspiration: userBackground.biggestInspiration,
+      namePronunciation: userBackground.namePronunciation || '',
+      pronoun: userBackground.pronoun || '',
+      favFestival: userBackground.favFestival || '',
+      favSport: userBackground.favSport || '',
+      favCuisine: userBackground.favCuisine || '',
+      favHobby: userBackground.favHobby || '',
+      biggestInspiration: userBackground.biggestInspiration || '',
     })
   }, [
     dispatch,
@@ -73,6 +87,7 @@ const UserBackgroundForm = () => {
     userBackground.favCuisine,
     userBackground.favHobby,
     userBackground.biggestInspiration,
+    userBackground.user,
   ])
 
   const formDataChangeHandler = (e) => {
@@ -85,16 +100,12 @@ const UserBackgroundForm = () => {
   const submitHandler = (e) => {
     e.preventDefault()
 
-    if (userBackground) {
-      dispatch(createUserBackground(formData))
-    } else {
-      dispatch(updateUserBackground(formData))
-    }
+    dispatch(createUserBackground(formData))
   }
 
-  // const backButtonHandler = () => {
-  //   navigate('/admin/productlist')
-  // }
+  const updateButtonHandler = () => {
+    dispatch(updateUserBackground(formData))
+  }
 
   if (createUserBackgroundIsLoading || getUserBackgroundIsLoading) {
     return <Loader />
@@ -187,13 +198,13 @@ const UserBackgroundForm = () => {
             <Button type='submit' variant='primary'>
               Confirm
             </Button>{' '}
-            {/* <Button
+            <Button
               variant='primary'
               className='btn btn-light my-3'
-              onClick={backButtonHandler}
+              onClick={updateButtonHandler}
             >
-              Go Back
-            </Button> */}
+              Update
+            </Button>
           </Form>
         )}
       </FormContainer>

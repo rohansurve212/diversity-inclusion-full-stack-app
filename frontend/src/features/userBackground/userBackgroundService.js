@@ -14,6 +14,10 @@ const createUserBackground = async (newUserBackgroundData, token) => {
 
   const response = await axios.post(API_URL, newUserBackgroundData, config)
 
+  if (response.data) {
+    localStorage.setItem('userBackground', JSON.stringify(response.data))
+  }
+
   return response.data
 }
 
@@ -25,7 +29,11 @@ const getUserBackground = async (token) => {
     },
   }
   const response = await axios.get(API_URL, config)
-  console.log(response.data)
+
+  if (response.data) {
+    localStorage.setItem('userBackground', JSON.stringify(response.data))
+  }
+
   return response.data
 }
 
@@ -38,8 +46,7 @@ const updateUserBackground = async (updatedUserBackgroundData, token) => {
     },
   }
 
-  const response = await axios.put(`${API_URL}/${reqBody._id}`, reqBody, config)
-
+  const response = await axios.put(`${API_URL}`, reqBody, config)
   return response.data
 }
 
@@ -56,11 +63,18 @@ const deleteUserBackground = async (userBackgroundId, token) => {
   return response.data
 }
 
+//Get all user Backgrounds
+const getAllUserBackgrounds = async () => {
+  const response = await axios.get(`${API_URL}/all`)
+  return response.data
+}
+
 const userBackgroundService = {
   createUserBackground,
   getUserBackground,
   updateUserBackground,
   deleteUserBackground,
+  getAllUserBackgrounds,
 }
 
 export default userBackgroundService

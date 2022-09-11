@@ -1,14 +1,15 @@
 /** @format */
-import { FaSignInAlt, FaSignOutAlt, FaUser } from 'react-icons/fa'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
+import { FaSignInAlt, FaSignOutAlt, FaUser, FaGamepad } from 'react-icons/fa'
 
-import { useSelector, useDispatch } from 'react-redux'
 import { logout, reset } from '../features/auth/authSlice'
 
 const Header = () => {
-  const navigate = useNavigate()
   const dispatch = useDispatch()
-  const { user } = useSelector((state) => state.auth)
+  const navigate = useNavigate()
+
+  const { user: loggedInUser } = useSelector((state) => state.auth)
 
   const logoutHandler = () => {
     dispatch(logout())
@@ -19,16 +20,26 @@ const Header = () => {
   return (
     <header className='header'>
       <div className='logo'>
-        <Link to='/'>Let's Know You Better</Link>
+        <Link to='/'>
+          <h1>Bond Better</h1>
+        </Link>
       </div>
       <ul>
-        {user ? (
-          <li>
-            <button className='btn' onClick={logoutHandler}>
-              <FaSignOutAlt />
-              Logout
-            </button>
-          </li>
+        {loggedInUser ? (
+          <>
+            <li>
+              <button className='btn' onClick={logoutHandler}>
+                <FaGamepad />
+                Game Board
+              </button>
+            </li>
+            <li>
+              <button className='btn' onClick={logoutHandler}>
+                <FaSignOutAlt />
+                Logout
+              </button>
+            </li>
+          </>
         ) : (
           <>
             <li>

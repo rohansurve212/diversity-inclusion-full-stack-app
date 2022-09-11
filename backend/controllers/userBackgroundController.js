@@ -1,6 +1,5 @@
 /** @format */
 import asyncHandler from 'express-async-handler'
-import mongoose from 'mongoose'
 
 import UserBackground from '../models/userBackground.js'
 import UserProfile from '../models/userProfile.js'
@@ -48,7 +47,16 @@ export const setUserBackground = asyncHandler(async (req, res) => {
     biggestInspiration: req.body.biggestInspiration || '',
   })
 
+  const user = await UserProfile.findById(req.user._id)
+  console.log(user)
+
   const createdUserBackground = await userBackground.save()
+
+  if (user) {
+    user.userFormCreated = true
+    await user.save()
+  }
+
   if (createdUserBackground) {
     res.status(201).json(createdUserBackground)
   } else {
@@ -58,10 +66,12 @@ export const setUserBackground = asyncHandler(async (req, res) => {
 })
 
 // @desc    Update userBackground
-// @route   PUT /api/userbackground/:id
+// @route   PUT /api/userbackground
 // @access  Private
 export const updateUserBackground = asyncHandler(async (req, res) => {
-  const userBackground = await UserBackground.findById(req.params.id)
+  const userBackground = await UserBackground.findOne({
+    user: req.user._id,
+  })
 
   if (!userBackground) {
     res.status(400)
@@ -75,19 +85,38 @@ export const updateUserBackground = asyncHandler(async (req, res) => {
   }
 
   //Make sure the logged in user matches the userBackground user
-  if (userBackground.user.toString() !== req.user.id.toString()) {
+  if (userBackground.user.toString() !== req.user.id) {
     res.status(401)
     throw new Error('User not authorized')
   }
 
-  const updatedUserBackground = await UserBackground.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    {
-      new: true,
-    }
-  )
-  res.status(200).json(updatedUserBackground)
+  const {
+    namePronunciation,
+    pronoun,
+    favFestival,
+    favSport,
+    favCuisine,
+    favHobby,
+    biggestInspiration,
+  } = await req.body
+
+  if (userBackground) {
+    userBackground.namePronunciation =
+      namePronunciation || userBackground.namePronunciation
+    userBackground.pronoun = pronoun || userBackground.pronoun
+    userBackground.favFestival = favFestival || userBackground.favFestival
+    userBackground.favSport = favSport || userBackground.favSport
+    userBackground.favCuisine = favCuisine || userBackground.favCuisine
+    userBackground.favHobby = favHobby || userBackground.favHobby
+    userBackground.biggestInspiration =
+      biggestInspiration || userBackground.biggestInspiration
+
+    const updatedUserBackground = await userBackground.save()
+    res.status(200).json(updatedUserBackground)
+  } else {
+    res.status(404)
+    throw new Error('UserBackground not found')
+  }
 })
 
 // @desc    Delete userBackground
@@ -115,4 +144,13 @@ export const deleteUserBackground = asyncHandler(async (req, res) => {
 
   await userBackground.remove()
   res.status(200).json({ id: req.params.id })
+})
+
+// @desc    Get all userBackground
+// @route   GET /api/userbackground/all
+// @access  Public
+export const getAllUserBackgrounds = asyncHandler(async (req, res) => {
+  const userBackgrounds = await UserBackground.find({})
+
+  res.status(200).json(userBackgrounds)
 })

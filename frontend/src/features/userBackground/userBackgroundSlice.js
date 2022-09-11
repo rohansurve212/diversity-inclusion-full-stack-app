@@ -4,8 +4,12 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 import userBackgroundService from './userBackgroundService'
 
+//Get user from localStorage
+const userBackground = JSON.parse(localStorage.getItem('userBackground'))
+
 const initialState = {
-  userBackground: {},
+  allUserBackgrounds: [],
+  userBackground: userBackground ? userBackground : {},
   createUserBackgroundIsError: false,
   createUserBackgroundIsSuccess: false,
   createUserBackgroundIsLoading: false,
@@ -22,6 +26,10 @@ const initialState = {
   deleteUserBackgroundIsSuccess: false,
   deleteUserBackgroundIsLoading: false,
   deleteUserBackgroundMessage: '',
+  getAllUserBackgroundsIsError: false,
+  getAllUserBackgroundsIsSuccess: false,
+  getAllUserBackgroundsIsLoading: false,
+  getAllUserBackgroundsMessage: '',
 }
 
 //Create new userBackground
@@ -93,6 +101,20 @@ export const deleteUserBackground = createAsyncThunk(
   }
 )
 
+//Get allUserBackgrounds
+export const getAllUserBackgrounds = createAsyncThunk(
+  'userBackground/getAll',
+  async (_, thunkAPI) => {
+    try {
+      return await userBackgroundService.getAllUserBackgrounds()
+    } catch (error) {
+      const message =
+        error.response?.data?.message || error.message || error.toString()
+      return thunkAPI.rejectWithValue(message)
+    }
+  }
+)
+
 export const userBackgroundSlice = createSlice({
   name: 'userBackground',
   initialState,
@@ -152,6 +174,19 @@ export const userBackgroundSlice = createSlice({
         state.deleteUserBackgroundIsLoading = false
         state.deleteUserBackgroundIsError = true
         state.deleteUserBackgroundMessage = action.payload
+      })
+      .addCase(getAllUserBackgrounds.pending, (state) => {
+        state.getAllUserBackgroundsIsLoading = true
+      })
+      .addCase(getAllUserBackgrounds.fulfilled, (state, action) => {
+        state.getAllUserBackgroundsIsLoading = false
+        state.getAllUserBackgroundsIsSuccess = true
+        state.allUserBackgrounds = action.payload
+      })
+      .addCase(getAllUserBackgrounds.rejected, (state, action) => {
+        state.getAllUserBackgroundsIsLoading = false
+        state.getAllUserBackgroundsIsError = true
+        state.getAllUserBackgroundsMessage = action.payload
       })
   },
 })

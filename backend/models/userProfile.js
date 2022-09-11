@@ -17,6 +17,11 @@ const userProfileSchema = mongoose.Schema(
       type: String,
       required: [true, 'Please add a password'],
     },
+    userFormCreated: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
   },
   { timestamps: true }
 )

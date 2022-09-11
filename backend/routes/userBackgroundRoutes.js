@@ -6,6 +6,7 @@ import {
   getUserBackground,
   setUserBackground,
   updateUserBackground,
+  getAllUserBackgrounds,
 } from '../controllers/userBackgroundController.js'
 import protect from '../middleware/authMiddleware.js'
 
@@ -15,9 +16,8 @@ router
   .route('/')
   .get(protect, getUserBackground)
   .post(protect, setUserBackground)
-router
-  .route('/:id')
   .put(protect, updateUserBackground)
-  .delete(protect, deleteUserBackground)
+router.route('/:id').delete(protect, deleteUserBackground)
+router.route('/all').get(getAllUserBackgrounds)
 
 export default router
