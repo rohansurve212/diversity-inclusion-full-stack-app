@@ -11,6 +11,10 @@ const Header = () => {
 
   const { user: loggedInUser } = useSelector((state) => state.auth)
 
+  const gameBoardHandler = () => {
+    navigate('/gameboard')
+  }
+
   const logoutHandler = () => {
     dispatch(logout())
     dispatch(reset())
@@ -28,7 +32,7 @@ const Header = () => {
         {loggedInUser ? (
           <>
             <li>
-              <button className='btn' onClick={logoutHandler}>
+              <button className='btn' onClick={gameBoardHandler}>
                 <FaGamepad />
                 Game Board
               </button>
