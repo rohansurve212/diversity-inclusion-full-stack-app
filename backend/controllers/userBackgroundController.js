@@ -150,7 +150,10 @@ export const deleteUserBackground = asyncHandler(async (req, res) => {
 // @route   GET /api/userbackground/all
 // @access  Public
 export const getAllUserBackgrounds = asyncHandler(async (req, res) => {
-  const userBackgrounds = await UserBackground.find({})
+  const userBackgrounds = await UserBackground.find({}).populate(
+    'user',
+    'id name'
+  )
 
   res.status(200).json(userBackgrounds)
 })

@@ -15,6 +15,8 @@ const BulletinBoard = () => {
   const { allUserBackgrounds } = useSelector((state) => state.userBackground)
 
   const [triviaCard, setTriviaCard] = useState(false)
+  const [checkAnswer, setCheckAnswer] = useState(false)
+  const [displayQuestion, setDisplayQuestion] = useState(false)
 
   useEffect(() => {
     if (!loggedInUser) {
@@ -24,17 +26,33 @@ const BulletinBoard = () => {
     dispatch(getAllUserBackgrounds())
   }, [loggedInUser, navigate, dispatch])
 
-  const createTriviaCard = () => {
-    setTriviaCard(true)
+  let questionBank = []
+  let question = ''
+  let answer = ''
 
+  if (triviaCard) {
     const randomUserBackground =
       allUserBackgrounds[Math.floor(Math.random() * allUserBackgrounds.length)]
 
-    const keys = Object.keys(randomUserBackground)
+    questionBank = [
+      `This person loves ${randomUserBackground.favCuisine} cuisine and enjoys the sport of ${randomUserBackground.favSport}. Who are we talking about?`,
+      `This person celebrates the festival of ${randomUserBackground.favFestival} and loves ${randomUserBackground.favHobby} as a favorite hobby. Who are we talking about?`,
+      `This person loves ${randomUserBackground.favCuisine} cuisine and celebrates the festival of ${randomUserBackground.favFestival}. Who are we talking about?`,
+      `This person enjoys the sport of ${randomUserBackground.favSport} and loves ${randomUserBackground.favHobby} as a favorite hobby. Who are we talking about?`,
+    ]
 
-    const randomUserDetail = keys[Math.floor(Math.random() * keys.length)]
+    question = questionBank[Math.floor(Math.random() * questionBank.length)]
+    answer = randomUserBackground.user.name
+  }
 
-    console.log(randomUserDetail, randomUserBackground[randomUserDetail])
+  const createTriviaCard = () => {
+    setDisplayQuestion(true)
+    setTriviaCard(true)
+  }
+
+  const checkAnswerHandler = () => {
+    setDisplayQuestion(false)
+    setCheckAnswer(true)
   }
 
   return (
@@ -48,14 +66,19 @@ const BulletinBoard = () => {
           </Button>
         </div>
         <h2> </h2>
-        {triviaCard && (
-          <Card>
-            <p>
-              This person loves to eat Mexican food and watch crime drama on TV.
-              Who are we talking about?
-            </p>
-          </Card>
+        {triviaCard && displayQuestion && (
+          <>
+            <Card>
+              <p>{question}</p>
+            </Card>
+            <h2> </h2>
+            <Button variant='secondary' onClick={checkAnswerHandler} size='lg'>
+              Check Answer
+            </Button>
+            <h2> </h2>
+          </>
         )}
+        {triviaCard && checkAnswer && !displayQuestion && <Card>{answer}</Card>}
       </section>
     </>
   )
