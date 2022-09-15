@@ -18,7 +18,8 @@ const BulletinBoard = () => {
   const [checkAnswer, setCheckAnswer] = useState(false)
   const [displayQuestion, setDisplayQuestion] = useState(false)
   const [triviaQuestion, setTriviaQuestion] = useState('')
-  const [triviaAnswer, setTriviaAnswer] = useState('')
+  const [triviaAnswerName, setTriviaAnswerName] = useState('')
+  const [triviaAnswerPronunciation, setTriviaAnswerPronunciation] = useState('')
 
   useEffect(() => {
     if (!loggedInUser) {
@@ -31,8 +32,9 @@ const BulletinBoard = () => {
   let questionBank = []
   let question = ''
   let answer = ''
+  let pronunciation = ''
 
-  const pickRandomUser = () => {
+  const pickRandomTriviaCard = () => {
     const randomUserBackground =
       allUserBackgrounds[Math.floor(Math.random() * allUserBackgrounds.length)]
 
@@ -45,16 +47,16 @@ const BulletinBoard = () => {
 
     question = questionBank[Math.floor(Math.random() * questionBank.length)]
     answer = randomUserBackground?.user.name
+    pronunciation = randomUserBackground?.namePronunciation
 
-    return [question, answer]
+    return [question, answer, pronunciation]
   }
 
-  console.log(pickRandomUser())
-
   const createTriviaCard = () => {
-    const user = pickRandomUser()
-    setTriviaQuestion(user[0])
-    setTriviaAnswer(user[1])
+    const triviaCard = pickRandomTriviaCard()
+    setTriviaQuestion(triviaCard[0])
+    setTriviaAnswerName(triviaCard[1])
+    setTriviaAnswerPronunciation(triviaCard[2])
     setDisplayQuestion(true)
     setTriviaCard(true)
   }
@@ -92,7 +94,10 @@ const BulletinBoard = () => {
           </>
         )}
         {triviaCard && checkAnswer && !displayQuestion && (
-          <Card>{triviaAnswer}</Card>
+          <Card>
+            <p>{triviaAnswerName}</p>
+            <p>Pronounced as: {triviaAnswerPronunciation}</p>
+          </Card>
         )}
       </section>
     </>
